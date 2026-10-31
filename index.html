@@ -112,7 +112,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* search + chips */
 .field{display:flex;flex-direction:column;gap:6px}
 .field label,.lbl{font-weight:600;font-size:14px}
-input[type=text],input[type=search],input[type=tel],input[type=number],select,textarea{
+input[type=text],input[type=search],input[type=tel],input[type=number],input[type=email],input[type=password],select,textarea{
   width:100%;min-height:50px;padding:10px 14px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);font-size:16px
 }
 textarea{min-height:92px;resize:vertical}
@@ -203,6 +203,22 @@ input[type=range]{width:100%;accent-color:var(--brand)}
 .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
 .seg button{min-height:42px;border:0;border-radius:999px;background:none;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+/* seller dashboard (pilot, only when a Firebase config is present) */
+.seg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dash-wrap{display:flex;flex-direction:column;gap:14px;width:100%;max-width:720px}
+.dash-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dash-top>div{min-width:0}
+.dash-top .muted{overflow-wrap:anywhere;font-size:13px}
+.dash-top h2{overflow-wrap:anywhere}
+.dash-order .btn-row{flex-wrap:wrap}
+.dash-order .btn-row .btn.small{flex:0 0 auto}
+.pill.s1{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.pill.sc{background:var(--surface-2);color:var(--bad);border-color:var(--bad)}
+.chip .num{opacity:.85;margin-left:4px}
+.dash-wrap .chips{flex-wrap:wrap;overflow:visible}
+.dash-top .btn{white-space:nowrap}
+.dash-order .btn-row .btn{padding:0 14px}
+
 .sync{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted-photo)}
 .sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
 .sync.ready::before,.sync.saved::before{background:var(--good)}
@@ -357,6 +373,8 @@ a.btn{text-decoration:none}
 
   /* sell */
   .seg{display:inline-grid;grid-template-columns:repeat(3,auto);width:max-content}
+  .seg.two{grid-template-columns:repeat(2,auto)}
+  .v-sell.t-dash{max-width:720px;width:100%;margin-inline:auto}
   .seg button{padding:0 28px}
   .dash-cols{display:grid;grid-template-columns:380px minmax(0,1fr);gap:22px;align-items:start}
   .dash-side,.dash-main{min-width:0}
@@ -397,7 +415,7 @@ a.btn{text-decoration:none}
 
 /*PURE-START*/
 var PILOT=true;
-var PILOT_CFG={"contactWa":"788326874","stores":[{"id":"smart","name":"Smart shop","cat":"phones","area":"Kariakoo","wa":"788326874","fee":5000,"items":[{"id":"watch","en":"Smart watch","sw":"Smart watch","p":50000},{"id":"iphone12pm","en":"iPhone 12 Pro Max","sw":"iPhone 12 Pro Max","p":800000}]}]};
+var PILOT_CFG={"contactWa":"788326874","firebase":{"apiKey":"AIzaSyCmxtJFcKxxDbGsH2aRnK6Hmwnxlqy6frA","authDomain":"shopbridge-tz.firebaseapp.com","projectId":"shopbridge-tz","storageBucket":"shopbridge-tz.firebasestorage.app","messagingSenderId":"841329214377","appId":"1:841329214377:web:9e3c1d7559df92d13dfab8"},"stores":[{"id":"smart","name":"Smart shop","cat":"phones","area":"Kariakoo","wa":"788326874","fee":5000,"items":[{"id":"watch","en":"Smart watch","sw":"Smart watch","p":50000},{"id":"iphone12pm","en":"iPhone 12 Pro Max","sw":"iPhone 12 Pro Max","p":800000}]}]};
 var RATE=5;
 function fmt(n){return 'TSh '+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -541,6 +559,27 @@ en:{
   sellTitle:'Sell on ShopBridge',sellLead:'Reach buyers in your area. We collect the payment, you prepare the order.',
   title_dash:'Store dashboard',title_products:'Products',
   sub_dash:'Dashboard',sub_products:'Products',sub_join:'Join',
+  sub_login:'Store login',dashTitle:'Your orders',
+  dLoginTitle:'Store login',dLoginLead:'Sign in to see your orders and mark them confirmed or delivered.',
+  dStore:'Store',dEmail:'Email',dPass:'Password',dSignIn:'Sign in',dSigningIn:'Signing in…',dSignOut:'Sign out',
+  dNoAcct:'No login yet? Message ShopBridge on WhatsApp and we will set one up for your store.',dNoAcctBtn:'Ask for a login',dNoAcctMsg:'Hello ShopBridge, please set up a store login for my shop.',
+  dLoading:'Loading…',dRetry:'Try again',dLive:'Live. New orders appear here by themselves.',
+  dWaNote:'Orders also arrive on WhatsApp. Use these buttons to keep track of each one.',
+  dc_new:'New',dc_confirmed:'Confirmed',dc_delivered:'Done',dc_cancelled:'Cancelled',
+  dp_new:'New',dp_confirmed:'Confirmed',dp_delivered:'Delivered',dp_picked:'Picked up',dp_cancelled:'Cancelled',
+  dEmpty:'No orders here',dEmptyHint:'New orders appear here as soon as buyers place them.',
+  dCustPays:'Customer pays the store',dToday:'Today',
+  dConfirm:'Confirm order',dDeliver:'Mark delivered',dPickedUp:'Mark picked up',dCancel:'Cancel order',dCancelSure:'Tap again to cancel',dUndo:'Undo',
+  dCall:'Call',dWaBuyer:'WhatsApp buyer',dNewOrder:'New order {id}',
+  dWaNew:'Hello {name}, this is {store} about your ShopBridge order {id}.',
+  dWaConfirmed:'Hello {name}, your order {id} from {store} is confirmed. Total: {total}. {how}',
+  dWaHowDel:'We will deliver to {where}.',dWaHowPick:'You can collect it at the shop.',
+  dWaDelivered:'Hello {name}, your order {id} from {store} is complete. Thank you for shopping local!',
+  dWaCancelled:'Hello {name}, sorry, {store} cannot complete your order {id}. Please contact us if you have a question.',
+  dErrFill:'Enter your email and password.',dErrCreds:'Wrong email or password.',dErrMany:'Too many tries. Wait a few minutes and try again.',
+  dErrNet:'No connection. Check your internet.',dErrPerm:'This account is not set up for this store yet. Ask ShopBridge.',
+  dErrLoad:'Could not load the dashboard. Check your internet and try again.',dErrGeneric:'Something went wrong. Please try again.',dSaveFail:'Could not update the order. Check your internet.',
+
   managing:'Store you are managing',storeSample:'Sample store',storeYours:'Your store',
   avail:'Available to withdraw',withdraw:'Withdraw {amt}',nothingToWithdraw:'Nothing to withdraw yet',
   held:'Held until orders are received',commissionPaid:'ShopBridge commission',sales:'Total sales',
@@ -612,6 +651,27 @@ sw:{
   sellTitle:'Uza kupitia ShopBridge',sellLead:'Fikia wanunuzi wa eneo lako. Sisi tunakusanya malipo, wewe unaandaa oda.',
   title_dash:'Dashibodi ya duka',title_products:'Bidhaa za duka',
   sub_dash:'Dashibodi',sub_products:'Bidhaa',sub_join:'Jiunge',
+  sub_login:'Ingia kwa duka',dashTitle:'Oda zako',
+  dLoginTitle:'Ingia kwa duka',dLoginLead:'Ingia kuona oda zako na kuziweka zimethibitishwa au zimefikishwa.',
+  dStore:'Duka',dEmail:'Barua pepe',dPass:'Nenosiri',dSignIn:'Ingia',dSigningIn:'Inaingia…',dSignOut:'Toka',
+  dNoAcct:'Huna akaunti bado? Tuma ujumbe kwa ShopBridge kwenye WhatsApp tukuwekee kwa duka lako.',dNoAcctBtn:'Omba akaunti',dNoAcctMsg:'Habari ShopBridge, tafadhali niwekee akaunti ya duka langu.',
+  dLoading:'Inapakia…',dRetry:'Jaribu tena',dLive:'Moja kwa moja. Oda mpya zinaonekana hapa zenyewe.',
+  dWaNote:'Oda zinafika pia kwenye WhatsApp. Tumia vitufe hivi kufuatilia kila oda.',
+  dc_new:'Mpya',dc_confirmed:'Zimethibitishwa',dc_delivered:'Zimekamilika',dc_cancelled:'Zimeghairiwa',
+  dp_new:'Mpya',dp_confirmed:'Imethibitishwa',dp_delivered:'Imefikishwa',dp_picked:'Imechukuliwa',dp_cancelled:'Imeghairiwa',
+  dEmpty:'Hakuna oda hapa',dEmptyHint:'Oda mpya zinaonekana hapa mara tu wanunuzi wanapoagiza.',
+  dCustPays:'Mteja analipa duka',dToday:'Leo',
+  dConfirm:'Thibitisha oda',dDeliver:'Weka imefikishwa',dPickedUp:'Weka imechukuliwa',dCancel:'Ghairi oda',dCancelSure:'Gusa tena kughairi',dUndo:'Rudisha',
+  dCall:'Piga simu',dWaBuyer:'WhatsApp mnunuzi',dNewOrder:'Oda mpya {id}',
+  dWaNew:'Habari {name}, hapa ni {store} kuhusu oda yako ya ShopBridge {id}.',
+  dWaConfirmed:'Habari {name}, oda yako {id} kutoka {store} imethibitishwa. Jumla: {total}. {how}',
+  dWaHowDel:'Tutakuletea: {where}.',dWaHowPick:'Unaweza kuichukua dukani.',
+  dWaDelivered:'Habari {name}, oda yako {id} kutoka {store} imekamilika. Asante kwa kununua kwa wenyeji!',
+  dWaCancelled:'Habari {name}, samahani, {store} haiwezi kukamilisha oda yako {id}. Tuwasiliane ukiwa na swali.',
+  dErrFill:'Weka barua pepe na nenosiri.',dErrCreds:'Barua pepe au nenosiri si sahihi.',dErrMany:'Umejaribu mara nyingi. Subiri dakika chache kisha ujaribu tena.',
+  dErrNet:'Hakuna mtandao. Angalia intaneti yako.',dErrPerm:'Akaunti hii bado haijawekwa kwa duka hili. Uliza ShopBridge.',
+  dErrLoad:'Imeshindwa kupakia dashibodi. Angalia intaneti na ujaribu tena.',dErrGeneric:'Kuna hitilafu. Jaribu tena.',dSaveFail:'Imeshindwa kusasisha oda. Angalia intaneti yako.',
+
   managing:'Duka unaloendesha',storeSample:'Duka la mfano',storeYours:'Duka lako',
   avail:'Unaweza kutoa',withdraw:'Toa {amt}',nothingToWithdraw:'Hakuna cha kutoa bado',
   held:'Inashikiliwa hadi oda zipokelewe',commissionPaid:'Kamisheni ya ShopBridge',sales:'Mauzo yote',
@@ -944,6 +1004,266 @@ if(PILOT){
 function ordNum(o){return parseInt(String(o.id).slice(3),10)||0;}
 function ordersFor(sid){return state.orders.filter(function(o){return o.sid===sid;}).sort(function(a,b){return ordNum(b)-ordNum(a);});}
 
+/* ---------- optional seller dashboard (Firebase) ----------
+   Off unless PILOT_CFG.firebase is set. Buyers still send every order on WhatsApp; the copy saved here only feeds the seller dashboard. */
+var FB_CFG=(PILOT&&PILOT_CFG.firebase&&PILOT_CFG.firebase.apiKey&&PILOT_CFG.firebase.projectId)?PILOT_CFG.firebase:null;
+var FB={on:!!FB_CFG,cfg:FB_CFG,ver:'10.12.2',mods:null,loading:null,app:null,auth:null,db:null,unsub:null,authBound:false,flushing:false,again:false};
+var BASE_TITLE=document.title;
+function lsGet(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function tl(lg,k,v){
+  var s=(I18N[lg]&&I18N[lg][k])||I18N.en[k]||k;
+  if(v){for(var x in v){s=s.split('{'+x+'}').join(v[x]);}}
+  return s;
+}
+function dynImport(u){return (new Function('u','return import(u)'))(u);}
+function fbLoad(){
+  if(!FB.on)return Promise.reject(new Error('off'));
+  if(FB.loading)return FB.loading;
+  var base='https://www.gstatic.com/firebasejs/'+FB.ver+'/';
+  FB.loading=Promise.resolve().then(function(){
+    return Promise.all([dynImport(base+'firebase-app.js'),dynImport(base+'firebase-auth.js'),dynImport(base+'firebase-firestore.js')]);
+  }).then(function(r){
+    FB.mods={app:r[0],auth:r[1],fs:r[2]};
+    FB.app=FB.mods.app.initializeApp(FB.cfg);
+    FB.auth=FB.mods.auth.getAuth(FB.app);
+    try{FB.db=FB.mods.fs.initializeFirestore(FB.app,{experimentalAutoDetectLongPolling:true});}
+    catch(e){FB.db=FB.mods.fs.getFirestore(FB.app);}
+    return FB;
+  }).catch(function(e){FB.loading=null;var x=new Error('load');x.cause=e;throw x;});
+  return FB.loading;
+}
+function fbErrKey(e){
+  var c=(e&&e.code)||'',m=(e&&e.message)||'';
+  if(m==='load')return 'dErrLoad';
+  if(/invalid-credential|wrong-password|user-not-found|invalid-email|missing-password|user-disabled/.test(c))return 'dErrCreds';
+  if(/too-many-requests/.test(c))return 'dErrMany';
+  if(/network|unavailable|offline|deadline/.test(c))return 'dErrNet';
+  if(/permission-denied|unauthenticated/.test(c))return 'dErrPerm';
+  return 'dErrGeneric';
+}
+function fbId(){
+  var a='abcdefghijklmnopqrstuvwxyz0123456789',s='',c=null;
+  try{if(window.crypto&&crypto.getRandomValues)c=crypto.getRandomValues(new Uint8Array(20));}catch(e){}
+  for(var i=0;i<20;i++){s+=a.charAt((c?c[i]:Math.floor(Math.random()*256))%36);}
+  return s;
+}
+
+/* buyer side: save a copy of each order so the store sees it on its dashboard */
+function fbOrderDoc(o){
+  return {
+    num:String(o.id).slice(0,20),sid:o.sid,store:cleanStr(o.store||'',60),
+    lines:o.lines.slice(0,40).map(function(l){return {qty:Math.round(l.qty)||0,price:Math.round(l.price)||0,en:cleanStr(l.en,80),sw:cleanStr(l.sw||l.en,80)};}),
+    goods:Math.round(o.gross),fee:Math.round(o.fee||0),total:Math.round(o.gross+(o.fee||0)),
+    ful:o.ful==='delivery'?'delivery':'pickup',area:cleanStr(o.area||'',80),landmark:cleanStr(o.landmark||'',80),
+    buyer:cleanStr(o.name||'',40),phone:String(o.phone||'').slice(0,12),status:'new',ts:o.ts||Date.now(),lang:o.lang==='sw'?'sw':'en'
+  };
+}
+function fbSend(o){
+  if(!FB.on||!o.fid||o.sync===1)return Promise.resolve();
+  return fbLoad().then(function(){
+    var m=FB.mods.fs;
+    return m.setDoc(m.doc(FB.db,'orders',o.fid),fbOrderDoc(o));
+  }).then(function(){o.sync=1;saveOrders();},function(err){
+    o.tries=(o.tries||0)+1;
+    /* a second "denied" means the first try already stored it (buyers cannot edit), or the store is not listed: stop retrying */
+    if(err&&err.code==='permission-denied'&&o.tries>1)o.sync=1;
+    saveOrders();
+  });
+}
+function fbFlush(){
+  if(!FB.on)return;
+  if(FB.flushing){FB.again=true;return;}
+  var todo=state.orders.filter(function(o){return o.fid&&!o.sync;});
+  if(!todo.length)return;
+  FB.flushing=true;
+  todo.reduce(function(p,o){return p.then(function(){return fbSend(o);});},Promise.resolve()).then(function(){
+    FB.flushing=false;if(FB.again){FB.again=false;fbFlush();}
+  });
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)fbFlush();});
+if(FB.on)setTimeout(fbFlush,2500);
+
+/* seller side */
+state.sellMode='join';
+state.dash={auth:'idle',ensuring:false,user:null,sid:null,store:'',email:'',orders:[],filter:'new',err:'',loginErr:'',loading:false,confirmId:null,newCount:0,first:true,seen:{}};
+function fromDoc(id,x){
+  x=x||{};
+  var lines=Array.isArray(x.lines)?x.lines.slice(0,40).map(function(l){
+    l=l||{};
+    return {qty:Math.max(0,Math.round(Number(l.qty))||0),price:Math.max(0,Math.round(Number(l.price))||0),en:cleanStr(l.en,80),sw:cleanStr(l.sw,80)||cleanStr(l.en,80)};
+  }):[];
+  var st=['new','confirmed','delivered','cancelled'].indexOf(x.status)>-1?x.status:'new';
+  return {fid:String(id),id:cleanStr(x.num,20)||String(id).slice(0,8),sid:cleanStr(x.sid,30),store:cleanStr(x.store,60),lines:lines,
+    gross:Math.round(Number(x.goods))||0,fee:Math.round(Number(x.fee))||0,ful:x.ful==='delivery'?'delivery':'pickup',
+    area:cleanStr(x.area,80),landmark:cleanStr(x.landmark,80),name:cleanStr(x.buyer,40),phone:normalizePhone(x.phone),
+    status:st,ts:Number(x.ts)||0,lang:x.lang==='sw'?'sw':'en'};
+}
+function dashRefresh(){
+  if(state.view==='sell'&&state.sellMode==='dash')render();
+  else{var tb=el('tabs');if(tb)tb.innerHTML=tabsHtml();}
+}
+function dashStop(){if(FB.unsub){try{FB.unsub();}catch(e){}FB.unsub=null;}}
+function dashListen(){
+  var D=state.dash,m=FB.mods.fs;
+  dashStop();
+  D.first=true;D.seen={};D.loading=true;
+  var q=m.query(m.collection(FB.db,'orders'),m.where('sid','==',D.sid));
+  FB.unsub=m.onSnapshot(q,function(snap){
+    var list=[],fresh=[],cached=!!(snap.metadata&&snap.metadata.fromCache);
+    snap.forEach(function(d){
+      var o=fromDoc(d.id,d.data());
+      list.push(o);
+      if(!D.seen[d.id]){D.seen[d.id]=1;if(!D.first&&o.status==='new')fresh.push(o);}
+    });
+    list.sort(function(a,b){return b.ts-a.ts;});
+    D.orders=list;D.loading=cached&&!list.length;D.err='';
+    if(!cached)D.first=false;
+    D.newCount=list.filter(function(o){return o.status==='new';}).length;
+    document.title=(D.newCount?'('+D.newCount+') ':'')+BASE_TITLE;
+    if(fresh.length){toast(t('dNewOrder',{id:fresh[0].id}));try{if(navigator.vibrate)navigator.vibrate(200);}catch(e){}}
+    dashRefresh();
+  },function(err){
+    D.loading=false;
+    if(fbErrKey(err)==='dErrPerm'){D.loginErr=t('dErrPerm');dashSignOut();return;}
+    D.err=t(fbErrKey(err));dashRefresh();
+  });
+}
+function dashEnsure(){
+  var D=state.dash;
+  if(D.ensuring)return;
+  D.ensuring=true;D.auth='loading';
+  fbLoad().then(function(){
+    D.ensuring=false;
+    if(FB.authBound)return;
+    FB.authBound=true;
+    FB.mods.auth.onAuthStateChanged(FB.auth,function(u){
+      if(u){
+        var sid=D.sid||lsGet('sb-dash-store');
+        if(!sid||!byId(sid)){FB.mods.auth.signOut(FB.auth);return;}
+        D.user={email:u.email||''};D.sid=sid;D.auth='in';D.loginErr='';
+        dashListen();
+      }else{
+        dashStop();D.user=null;D.orders=[];D.newCount=0;D.auth='out';
+        document.title=BASE_TITLE;
+      }
+      dashRefresh();
+    });
+  },function(){D.ensuring=false;D.auth='error';dashRefresh();});
+}
+function dashLogin(){
+  var D=state.dash,sel=el('d-store'),sid=sel?sel.value:STORES[0].id,em=(el('d-email').value||'').trim(),pw=el('d-pw').value||'';
+  var err=el('err-login'),btn=el('d-go');
+  function fail(msg){err.textContent=msg;err.hidden=false;btn.disabled=false;btn.textContent=t('dSignIn');D.sid=null;lsDel('sb-dash-store');}
+  if(!em||!pw){fail(t('dErrFill'));return;}
+  btn.disabled=true;btn.textContent=t('dSigningIn');err.hidden=true;D.loginErr='';
+  D.email=em;D.store=sid;lsSet('sb-dash-email',em);lsSet('sb-dash-last',sid);
+  D.sid=sid;lsSet('sb-dash-store',sid);
+  fbLoad().then(function(){
+    return FB.mods.auth.signInWithEmailAndPassword(FB.auth,em,pw);
+  }).then(function(){
+    /* the auth listener starts the live order list */
+    if(D.auth!=='in'){D.auth='in';D.user={email:em};dashListen();dashRefresh();}
+  }).catch(function(e){fail(t(fbErrKey(e)));});
+}
+function dashSignOut(){
+  var D=state.dash;
+  lsDel('sb-dash-store');D.sid=null;dashStop();
+  if(FB.mods&&FB.auth){try{var p=FB.mods.auth.signOut(FB.auth);if(p&&p.catch)p.catch(function(){});}catch(e){}}
+  D.user=null;D.orders=[];D.newCount=0;D.auth='out';D.confirmId=null;
+  document.title=BASE_TITLE;
+  dashRefresh();
+}
+function dashSet(fid,to){
+  var m=FB.mods&&FB.mods.fs;
+  if(!m||['new','confirmed','delivered','cancelled'].indexOf(to)<0)return;
+  state.dash.confirmId=null;
+  var p=m.updateDoc(m.doc(FB.db,'orders',fid),{status:to,upd:Date.now()});
+  if(p&&p.catch)p.catch(function(err){toast(t(fbErrKey(err)==='dErrPerm'?'dErrPerm':'dSaveFail'));});
+  dashRefresh();
+}
+function dashBoot(){
+  if(!FB.on)return;
+  state.dash.email=lsGet('sb-dash-email');
+  state.dash.store=lsGet('sb-dash-last');
+  var s=lsGet('sb-dash-store');
+  if(s&&byId(s)){state.sellMode='dash';state.dash.sid=s;dashEnsure();}
+}
+
+/* seller views */
+function modeSeg(){
+  return '<div class="seg two" role="group">'+['join','dash'].map(function(k){
+    return '<button type="button" data-act="dmode" data-mode="'+k+'" aria-pressed="'+(state.sellMode===k)+'">'+t(k==='join'?'sub_join':'sub_login')+'</button>';
+  }).join('')+'</div>';
+}
+function fmtWhen(ts){
+  if(!ts)return '';
+  var d=new Date(ts),n=new Date(),p=function(x){return (x<10?'0':'')+x;},hm=p(d.getHours())+':'+p(d.getMinutes());
+  return d.toDateString()===n.toDateString()?t('dToday')+' '+hm:p(d.getDate())+'/'+p(d.getMonth()+1)+' '+hm;
+}
+function dashPill(o){
+  var k=o.status==='delivered'?(o.ful==='delivery'?'dp_delivered':'dp_picked'):'dp_'+o.status;
+  var c={'new':'s0','confirmed':'s1','delivered':'s3','cancelled':'sc'}[o.status];
+  return '<span class="pill '+c+'">'+t(k)+'</span>';
+}
+function waBuyerUrl(o){
+  var lg=o.lang==='sw'?'sw':'en',name=o.name||(lg==='sw'?'mteja':'there');
+  var key={'new':'dWaNew','confirmed':'dWaConfirmed','delivered':'dWaDelivered','cancelled':'dWaCancelled'}[o.status];
+  var how=o.ful==='delivery'?tl(lg,'dWaHowDel',{where:whereOf(o)}):tl(lg,'dWaHowPick');
+  var msg=tl(lg,key,{name:name,id:o.id,store:o.store,total:fmt(o.gross+o.fee),how:how});
+  return waUrl(msg,o.phone?'255'+o.phone:'');
+}
+function dashCard(o){
+  var D=state.dash,id=esc(o.fid),total=o.gross+o.fee,st=o.status;
+  var lines=o.lines.map(function(l){return l.qty+' × '+lineName(l);}).join(', ');
+  var who=[o.name,o.phone?phoneShow(o.phone):''].filter(Boolean).join(' · ');
+  var cancel='<button type="button" class="btn danger" data-act="d-cancel" data-oid="'+id+'">'+(D.confirmId===o.fid?t('dCancelSure'):t('dCancel'))+'</button>';
+  var go=function(to,label){return '<button type="button" class="btn" data-act="d-status" data-oid="'+id+'" data-to="'+to+'">'+label+'</button>';};
+  var actions='';
+  if(st==='new')actions=go('confirmed',t('dConfirm'))+cancel;
+  else if(st==='confirmed')actions=go('delivered',t(o.ful==='delivery'?'dDeliver':'dPickedUp'))+cancel;
+  else if(st==='delivered')actions='<button type="button" class="btn small ghost" data-act="d-status" data-oid="'+id+'" data-to="confirmed">'+t('dUndo')+'</button>';
+  else actions='<button type="button" class="btn small ghost" data-act="d-status" data-oid="'+id+'" data-to="new">'+t('dUndo')+'</button>';
+  var contact='<div class="wa-row"><a class="btn wa" href="'+esc(waBuyerUrl(o))+'" target="_blank" rel="noopener">'+WA_ICON+t('dWaBuyer')+'</a>'+
+    (o.phone?'<a class="btn small ghost" href="tel:+255'+o.phone+'">'+t('dCall')+'</a>':'')+'</div>';
+  return '<article class="card order dash-order"><div class="order-head"><div><p class="ref">'+esc(o.id)+' · '+esc(fmtWhen(o.ts))+'</p><h3>'+esc(who||o.id)+'</h3></div>'+dashPill(o)+'</div>'+
+    '<p class="muted lines">'+esc(lines)+'</p><p class="muted lines">'+esc(fulText(o))+'</p>'+
+    '<dl class="kv"><div class="strong"><dt>'+t('dCustPays')+'</dt><dd>'+fmt(total)+'</dd></div>'+(o.fee?'<div class="sub"><dt>'+t('feeIncl')+'</dt><dd>'+fmt(o.fee)+'</dd></div>':'')+'</dl>'+
+    contact+'<div class="btn-row">'+actions+'</div></article>';
+}
+function loginHtml(){
+  var D=state.dash,pick=D.store&&byId(D.store)?D.store:STORES[0].id;
+  var opts=STORES.map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===pick?' selected':'')+'>'+esc(s.name)+'</option>';}).join('');
+  var help=CONTACT_WA?'<div class="note">'+t('dNoAcct')+'</div><a class="btn ghost" href="'+esc(waUrl(t('dNoAcctMsg'),'255'+CONTACT_WA))+'" target="_blank" rel="noopener">'+t('dNoAcctBtn')+'</a>':'';
+  return '<div class="dash-wrap"><form class="card form" id="loginForm" novalidate><h2>'+t('dLoginTitle')+'</h2><p class="muted">'+t('dLoginLead')+'</p>'+
+    (STORES.length>1?fieldHtml('d-store',t('dStore'),'<select id="d-store">'+opts+'</select>'):'')+
+    fieldHtml('d-email',t('dEmail'),'<input id="d-email" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" value="'+esc(D.email)+'">')+
+    fieldHtml('d-pw',t('dPass'),'<input id="d-pw" type="password" autocomplete="current-password">')+
+    '<p class="err" id="err-login"'+(D.loginErr?'':' hidden')+'>'+esc(D.loginErr)+'</p>'+
+    '<button type="submit" class="btn" id="d-go">'+t('dSignIn')+'</button></form>'+help+'</div>';
+}
+function dashboardView(){
+  var D=state.dash;
+  if(D.auth==='idle')setTimeout(dashEnsure,0);
+  if(D.auth==='idle'||D.auth==='loading')return '<div class="dash-wrap"><div class="card center"><p class="muted">'+t('dLoading')+'</p></div></div>';
+  if(D.auth==='error')return '<div class="dash-wrap"><div class="card center"><p class="err">'+t('dErrLoad')+'</p><button type="button" class="btn" data-act="d-retry">'+t('dRetry')+'</button></div></div>';
+  if(D.auth!=='in')return loginHtml();
+  var s=byId(D.sid),f=D.filter,keys=['new','confirmed','delivered','cancelled'],cnt={};
+  keys.forEach(function(k){cnt[k]=D.orders.filter(function(o){return o.status===k;}).length;});
+  var top='<div class="card dash-top"><div><p class="sync ready">'+t('dLive')+'</p><h2>'+esc(s?s.name:'')+'</h2><p class="muted">'+esc(D.user?D.user.email:'')+'</p></div>'+
+    '<button type="button" class="btn small ghost" data-act="d-signout">'+t('dSignOut')+'</button></div>';
+  var chips='<div class="chips" role="group">'+keys.map(function(k){
+    return '<button type="button" class="chip" data-act="d-filter" data-flt="'+k+'" aria-pressed="'+(f===k)+'">'+t('dc_'+k)+' <span class="num">'+cnt[k]+'</span></button>';
+  }).join('')+'</div>';
+  var shown=D.orders.filter(function(o){return o.status===f;});
+  var list=D.loading&&!D.orders.length
+    ?'<div class="card center"><p class="muted">'+t('dLoading')+'</p></div>'
+    :(shown.length?shown.map(dashCard).join(''):'<div class="card center"><h3>'+t('dEmpty')+'</h3><p class="muted">'+t('dEmptyHint')+'</p></div>');
+  return '<div class="dash-wrap">'+top+(D.err?'<p class="err">'+esc(D.err)+'</p>':'')+chips+list+'<p class="pilot-note">'+t('dWaNote')+'</p></div>';
+}
+
+
 /* shop views */
 function catChips(){
   var all=['all'].concat(CATS);
@@ -1205,7 +1525,11 @@ function joinView(){
     '<div id="sellWrap">'+(state.applied?appliedHtml():formHtml())+'</div></div>';
 }
 function sellView(){
-  if(PILOT)return '<section class="stack v-sell t-join"><h1>'+t('sellTitle')+'</h1>'+joinView()+'</section>';
+  if(PILOT){
+    if(!FB.on)return '<section class="stack v-sell t-join"><h1>'+t('sellTitle')+'</h1>'+joinView()+'</section>';
+    var dm=state.sellMode==='dash';
+    return '<section class="stack v-sell '+(dm?'t-dash':'t-join')+'"><h1>'+t(dm?'dashTitle':'sellTitle')+'</h1>'+modeSeg()+(dm?dashboardView():joinView())+'</section>';
+  }
   var m=mgrStore(),k=state.sellTab,title=(k==='dash')?t('title_dash'):(k==='products'?t('title_products'):t('sellTitle'));
   var body=(k==='dash')?dashView(m):(k==='products'?productsView(m):joinView());
   return '<section class="stack v-sell t-'+k+'"><h1>'+title+'</h1>'+segHtml()+(k==='join'?'':syncHtml())+body+'</section>';
@@ -1257,7 +1581,7 @@ function tabsHtml(){
   return TABS.map(function(tb){
     var on=tb.views.indexOf(state.view)>-1;
     return '<button type="button" class="tab" data-act="tab" data-tab="'+tb.id+'"'+(on?' aria-current="page"':'')+'>'+tb.icon+
-      '<span>'+t('tab_'+tb.id)+'</span>'+(tb.id==='cart'&&n?'<span class="badge num">'+n+'</span>':'')+'</button>';
+      '<span>'+t('tab_'+tb.id)+'</span>'+(tb.id==='cart'&&n?'<span class="badge num">'+n+'</span>':'')+(tb.id==='sell'&&FB.on&&state.dash.newCount?'<span class="badge num">'+state.dash.newCount+'</span>':'')+'</button>';
   }).join('');
 }
 var lastKey=null;
@@ -1269,7 +1593,7 @@ function render(){
   el('langEn').setAttribute('aria-pressed',String(state.lang==='en'));
   el('langSw').setAttribute('aria-pressed',String(state.lang==='sw'));
   renderSheet();
-  if(v==='sell'&&state.sellTab==='join')updateCalc();
+  if(v==='sell'&&state.sellTab==='join'&&el('calcOrder'))updateCalc();
   if(key!==lastKey){window.scrollTo(0,0);lastKey=key;}
   if(state.focusId){var f=el(state.focusId);if(f)f.focus();state.focusId=null;}
 }
@@ -1286,11 +1610,13 @@ function placeOrders(){
       ful:del?'delivery':'pickup',area:del?state.area.trim().slice(0,80):'',landmark:del?state.landmark.trim().slice(0,80):'',
       name:state.bName.trim().slice(0,40),phone:state.pay.phone
     });
+    if(FB.on){var po=state.orders[state.orders.length-1];po.fid=fbId();po.ts=Date.now();po.lang=state.lang;po.sync=0;}
     ids.push(id);n++;
   });
   state.cart={};
   state.pay.count=n;state.pay.ids=ids;
   saveOrders();
+  if(FB.on)setTimeout(fbFlush,0);
 }
 
 /* catalogue editing */
@@ -1367,6 +1693,7 @@ document.addEventListener('click',function(e){
   if(!b)return;
   var d=b.dataset;
   if(d.act!=='del-product'&&d.act!=='remove-store')state.confirm=null;
+  if(d.act!=='d-cancel'&&state.dash)state.dash.confirmId=null;
   if(MUTATING[d.act]&&state.sync==='checking'){toast(t('sync_checking'));return;}
   switch(d.act){
     case 'lang':
@@ -1379,7 +1706,7 @@ document.addEventListener('click',function(e){
     case 'back':go('shop');break;
     case 'inc':setQty(d.sid,d.pid,cartQty(d.sid,d.pid)+1);render();break;
     case 'dec':setQty(d.sid,d.pid,cartQty(d.sid,d.pid)-1);render();break;
-    case 'to-checkout':if(totalQty()>0){state.phoneErr=false;go('checkout');}break;
+    case 'to-checkout':if(totalQty()>0){state.phoneErr=false;if(FB.on)fbLoad().catch(function(){});go('checkout');}break;
     case 'to-cart':go('cart');break;
     case 'net':state.net=d.net;render();break;
     case 'pay':{
@@ -1459,6 +1786,15 @@ document.addEventListener('click',function(e){
     }
     case 'view-in-shop':state.storeId=mgrStore().id;go('store');break;
     case 'open-dash':createStore();break;
+    case 'dmode':if(d.mode==='join'||d.mode==='dash'){state.sellMode=d.mode;state.view='sell';render();}break;
+    case 'd-filter':if(['new','confirmed','delivered','cancelled'].indexOf(d.flt)>-1){state.dash.filter=d.flt;render();}break;
+    case 'd-status':dashSet(d.oid,d.to);break;
+    case 'd-cancel':
+      if(state.dash.confirmId===d.oid)dashSet(d.oid,'cancelled');
+      else{state.dash.confirmId=d.oid;render();}
+      break;
+    case 'd-signout':dashSignOut();break;
+    case 'd-retry':state.dash.auth='idle';render();break;
     case 'edit-app':state.applied=null;render();break;
     case 'another':
       state.applied=null;
@@ -1470,6 +1806,8 @@ document.addEventListener('click',function(e){
 function onField(e){
   var n=e.target;
   if(n.id==='q'){state.q=n.value;var l=el('storeList');if(l)l.innerHTML=storeList();return;}
+  if(n.id==='d-email'){state.dash.email=n.value;return;}
+  if(n.id==='d-store'){state.dash.store=n.value;return;}
   if(n.id==='b-name'){state.bName=n.value;return;}
   if(n.id==='b-area'){
     state.area=n.value;
@@ -1513,6 +1851,7 @@ el('photoInput').addEventListener('change',function(e){
 
 document.addEventListener('submit',function(e){
   if(e.target.id==='editForm'){e.preventDefault();saveEdit();return;}
+  if(e.target.id==='loginForm'){e.preventDefault();dashLogin();return;}
   if(e.target.id!=='sellForm')return;
   e.preventDefault();
   var f=state.form,errs={};
@@ -1535,6 +1874,7 @@ document.addEventListener('submit',function(e){
 });
 
 if(WIDE.addEventListener)WIDE.addEventListener('change',function(){render();});
+dashBoot();
 render();
 initCloud();
 })();
